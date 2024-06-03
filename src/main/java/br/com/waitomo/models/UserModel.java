@@ -1,15 +1,15 @@
 package br.com.waitomo.models;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Table(name = "tb_user")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
+@Setter
 public class UserModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

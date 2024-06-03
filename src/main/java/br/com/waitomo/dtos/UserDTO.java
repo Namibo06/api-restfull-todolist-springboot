@@ -1,6 +1,7 @@
 package br.com.waitomo.dtos;
 
 import jakarta.persistence.UniqueConstraint;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.stereotype.Indexed;

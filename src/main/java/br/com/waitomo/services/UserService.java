@@ -31,6 +31,24 @@ public class UserService {
         return modelMapper.map(userModel,UserDTO.class);
     }
 
+    public UserDTO authenticateUser(UserDTO user){
+        String messageError="Usuário não existe";
+
+        UserModel userModel=modelMapper.map(user,UserModel.class);
+        String email=userModel.getEmail();
+        String password=userModel.getPassword();
+
+        UserModel authUser=userRepository.findByEmailAndPassword(email,password);
+
+        if (authUser != null) {
+            // Se encontrado, mapeie o UserModel para UserDTO e retorne
+            return modelMapper.map(authUser, UserDTO.class);
+        } else {
+            // Se não encontrado, lance uma exceção ou retorne null, dependendo do seu cenário
+            throw new EntityNotFoundException("Usuário não encontrado");
+        }
+    }
+
     public UserDTO findUserById(Long id) {
         UserModel userModel=userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException());
         return modelMapper.map(userModel,UserDTO.class);
