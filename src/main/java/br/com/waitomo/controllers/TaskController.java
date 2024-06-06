@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
+import java.util.List;
 
 @RestController
 @RequestMapping("/tasks")
@@ -20,15 +21,15 @@ public class TaskController {
     private final TaskService taskService;
 
     @PostMapping
-    public ResponseEntity<TaskDTO> createTask(@RequestBody @Valid TaskDTO taskDTO, UriComponentsBuilder uriBuilder){
-        TaskDTO taskCreate=taskService.createTask(taskDTO);
-        URI pathTask = uriBuilder.path("/tasks/{id}").buildAndExpand(taskDTO.getId()).toUri();
-        return ResponseEntity.created(pathTask).body(taskDTO);
+    public ResponseEntity<TaskDTO> createTask(@RequestBody @Valid TaskDTO taskDTO, UriComponentsBuilder uriBuilder) {
+        TaskDTO taskCreate = taskService.createTask(taskDTO);
+        URI pathTask = uriBuilder.path("/tasks/{id}").buildAndExpand(taskCreate.getId()).toUri();
+        return ResponseEntity.created(pathTask).body(taskCreate);
     }
 
-    @GetMapping
-    public ResponseEntity<Page<TaskDTO>> findAllTasks(Pageable pageable){
-        Page<TaskDTO> tasks = taskService.findAllTasks(pageable);
+    @GetMapping("/findAll/{id}")
+    public ResponseEntity<List<TaskDTO>> findAllTasks(@PathVariable Long id){
+        List<TaskDTO> tasks = taskService.findAllTasks(id);
         return ResponseEntity.ok(tasks);
     }
 

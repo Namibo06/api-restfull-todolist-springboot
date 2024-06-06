@@ -14,6 +14,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -42,17 +44,23 @@ public class TaskService {
         return mapTaskModelToDTO(savedTaskModel);
     }
 
-    public Page<TaskDTO> findAllTasks(Pageable pageable){
-        Page<TaskModel> taskModels = taskRepository.findAll(pageable);
-        return taskModels.map(taskModel -> {
+    public List<TaskDTO> findAllTasks(Long id) {
+        List<TaskModel> taskModels = taskRepository.findTasksByUserId(id);
+        List<TaskDTO> taskDTOs = new ArrayList<>();
+
+        for (TaskModel taskModel : taskModels) {
             TaskDTO taskDTO = modelMapper.map(taskModel, TaskDTO.class);
-            // Se TaskModel tiver um UserModel não nulo, mapeie-o para UserDTO
+
+            // Mapear o UserModel para UserDTO
             if (taskModel.getUserModel() != null) {
                 UserDTO userDTO = modelMapper.map(taskModel.getUserModel(), UserDTO.class);
                 taskDTO.setUser_id(userDTO);
             }
-            return taskDTO;
-        });
+
+            taskDTOs.add(taskDTO);
+        }
+
+        return taskDTOs;
     }
 
     public TaskDTO findTaskById(Long id){
@@ -108,16 +116,13 @@ public class TaskService {
         taskDTO.setTitle(taskModel.getTitle());
         taskDTO.setDescription(taskModel.getDescription());
 
-        //Mapear o UserModel para UserDTO,se estiver presente
-        //retornando somente o id
-        if(taskModel.getUserModel() != null){
-            UserDTO userDTO = new UserDTO();
-            userDTO.setId(taskModel.getUserModel().getId());
-            //aqui mapea outros campos do UserModel para o UserDTO,se necessário
-            taskDTO.setUser_id(userDTO);
-        }
+        // Certifique-se de mapear corretamente o UserModel para UserDTO
+        UserDTO userDTO = new UserDTO();
+        userDTO.setId(taskModel.getUserModel().getId());
+        userDTO.setUsername(taskModel.getUserModel().getUsername());
+        userDTO.setEmail(taskModel.getUserModel().getEmail());
+        taskDTO.setUser_id(userDTO);
 
-        //retornando DTO para o createTask para ser retornado  ao controller
         return taskDTO;
     }
 }
