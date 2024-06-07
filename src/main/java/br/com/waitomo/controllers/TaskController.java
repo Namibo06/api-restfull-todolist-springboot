@@ -1,6 +1,7 @@
 package br.com.waitomo.controllers;
 
 import br.com.waitomo.dtos.TaskDTO;
+import br.com.waitomo.dtos.TaskSearchDTO;
 import br.com.waitomo.services.TaskService;
 import jakarta.validation.Valid;
 import lombok.NonNull;
@@ -37,6 +38,12 @@ public class TaskController {
     public ResponseEntity<TaskDTO> findTaskById(@PathVariable @NonNull Long id){
        TaskDTO task = taskService.findTaskById(id);
        return ResponseEntity.ok(task);
+    }
+
+    @PostMapping("/search")
+    public ResponseEntity<List<TaskDTO>> findTaskSearch(@RequestBody @Valid TaskSearchDTO taskSearchDTO){
+        List<TaskDTO> taskDTOList = taskService.findTaskSearch(taskSearchDTO.getSearch(),taskSearchDTO.getUser_id().getId());
+        return ResponseEntity.ok(taskDTOList);
     }
 
     @PutMapping("/{id}")

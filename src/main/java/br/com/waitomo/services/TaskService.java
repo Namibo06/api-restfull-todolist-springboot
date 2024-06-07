@@ -1,6 +1,7 @@
 package br.com.waitomo.services;
 
 import br.com.waitomo.dtos.TaskDTO;
+import br.com.waitomo.dtos.TaskSearchDTO;
 import br.com.waitomo.dtos.UserDTO;
 import br.com.waitomo.models.TaskModel;
 import br.com.waitomo.models.UserModel;
@@ -11,12 +12,14 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.config.Task;
 import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -78,6 +81,28 @@ public class TaskService {
         return taskDTO;
     }
 
+    public List<TaskDTO> findTaskSearch(String search, Long userId) {
+        List<TaskModel> tasks = taskRepository.findTasksSearchQuery(search, userId);
+        return tasks.stream().map(this::convertToDTO).collect(Collectors.toList());
+    }
+
+    private TaskDTO convertToDTO(TaskModel taskModel) {
+        TaskDTO taskDTO = new TaskDTO();
+        taskDTO.setId(taskModel.getId());
+        taskDTO.setTitle(taskModel.getTitle());
+        taskDTO.setDescription(taskModel.getDescription());
+
+        UserModel userModel = taskModel.getUserModel();
+        UserDTO userDTO = new UserDTO();
+        userDTO.setId(userModel.getId());
+        userDTO.setUsername(userModel.getUsername());
+        userDTO.setEmail(userModel.getEmail());
+
+        taskDTO.setUser_id(userDTO);
+
+        return taskDTO;
+    }
+
     public TaskDTO updateTaskById(Long id,TaskDTO taskDTO){
         TaskModel taskModel = taskRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Tarefa não encontrada"));
 
@@ -101,6 +126,8 @@ public class TaskService {
         // Retorna o DTO atualizado
         return updatedTaskDTO;
     }
+
+
 
     public void deleteTaskById(Long id){
         TaskModel taskModel = taskRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Tarefa não encontrada"));
