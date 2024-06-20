@@ -96,7 +96,7 @@ public class TaskService {
         UserDTO userDTO = new UserDTO();
         userDTO.setId(userModel.getId());
         userDTO.setUsername(userModel.getUsername());
-        userDTO.setLogin(userModel.getLogin());
+        userDTO.setEmail(userModel.getEmail());
 
         taskDTO.setUser_id(userDTO);
 
@@ -147,7 +147,7 @@ public class TaskService {
         UserDTO userDTO = new UserDTO();
         userDTO.setId(taskModel.getUserModel().getId());
         userDTO.setUsername(taskModel.getUserModel().getUsername());
-        userDTO.setLogin(taskModel.getUserModel().getLogin());
+        userDTO.setEmail(taskModel.getUserModel().getEmail());
         taskDTO.setUser_id(userDTO);
 
         return taskDTO;
