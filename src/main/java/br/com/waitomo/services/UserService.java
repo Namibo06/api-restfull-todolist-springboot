@@ -34,7 +34,7 @@ public class UserService implements UserDetailsService {
         // Salva o UserModel no repositório
         userRepository.save(userModel);
 
-        // Retorna o UserModel mapeado de volta para um DTO
+        // Retorna o DTO original, se necessário, ou apenas o UserModel mapeado para DTO
         return modelMapper.map(userModel, DataUserRegisterDTO.class);
     }
 
