@@ -27,7 +27,7 @@ public class UserService implements UserDetailsService {
     public DataUserRegisterDTO createUser(DataUserRegisterDTO user) {
         UserModel userModel=modelMapper.map(user,UserModel.class);
         userModel.setUsername(userModel.getUsername());
-        userModel.setLogin(userModel.getLogin());
+        userModel.setEmail(userModel.getEmail());
         userModel.setPassword(passwordEncoder.encode(userModel.getPassword()));
         userRepository.save(userModel);
         return modelMapper.map(userModel,DataUserRegisterDTO.class);

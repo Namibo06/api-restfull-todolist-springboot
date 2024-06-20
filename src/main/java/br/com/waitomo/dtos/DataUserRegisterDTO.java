@@ -9,7 +9,7 @@ import lombok.Setter;
 public class DataUserRegisterDTO {
     private Long id;
     @NotBlank
-    private String login;
+    private String email;
     @NotBlank
     private String password;
 }

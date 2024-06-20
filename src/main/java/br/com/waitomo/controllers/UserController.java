@@ -41,7 +41,7 @@ public class UserController {
 
     @PostMapping("/login")
     public ResponseEntity<Void> authenticateUser(@RequestBody @Valid DataUserRegisterDTO credentials){
-        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(credentials.getLogin(),credentials.getPassword());
+        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(credentials.getEmail(),credentials.getPassword());
         Authentication authentication = auth.authenticate(token);
 
         return ResponseEntity.ok().build();

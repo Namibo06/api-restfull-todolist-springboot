@@ -23,7 +23,7 @@ public class UserModel implements UserDetails {
     @Column(length = 50,nullable = false)
     private String username;
     @Column(length = 100,nullable = false,unique = true)
-    private String login;
+    private String email;
     @Column(length = 100,nullable = false)
     private String password;
 
@@ -34,7 +34,7 @@ public class UserModel implements UserDetails {
 
     @Override
     public String getUsername(){
-        return login;
+        return email;
     }
 
     @Override

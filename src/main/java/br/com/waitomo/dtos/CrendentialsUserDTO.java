@@ -6,6 +6,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class CrendentialsUserDTO {
-    private String login;
+    private String email;
     private String password;
 }
