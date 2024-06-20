@@ -1,52 +1,36 @@
 package br.com.waitomo.services;
 
+import br.com.waitomo.dtos.DataUserRegisterDTO;
 import br.com.waitomo.dtos.UserDTO;
 import br.com.waitomo.models.UserModel;
 import br.com.waitomo.repositories.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.apache.catalina.User;
-import org.modelmapper.internal.bytebuddy.implementation.bytecode.Throw;
-import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
-import org.springframework.data.domain.Page;
-import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.modelmapper.ModelMapper;
-import org.springframework.web.client.HttpClientErrorException.UnprocessableEntity;
 
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class UserService {
+public class UserService implements UserDetailsService {
     //injeções
     private final UserRepository userRepository;
-
     private final ModelMapper modelMapper;
+    private final PasswordEncoder passwordEncoder;
 
     //services
-    public UserDTO createUser(UserDTO user) {
+    public DataUserRegisterDTO createUser(DataUserRegisterDTO user) {
         UserModel userModel=modelMapper.map(user,UserModel.class);
+        userModel.setUsername(userModel.getUsername());
+        userModel.setLogin(userModel.getLogin());
+        userModel.setPassword(passwordEncoder.encode(userModel.getPassword()));
         userRepository.save(userModel);
-        return modelMapper.map(userModel,UserDTO.class);
-    }
-
-    public UserDTO authenticateUser(UserDTO user){
-        String messageError="Usuário não existe";
-
-        UserModel userModel=modelMapper.map(user,UserModel.class);
-        String email=userModel.getEmail();
-        String password=userModel.getPassword();
-
-        UserModel authUser=userRepository.findByEmailAndPassword(email,password);
-
-        if (authUser != null) {
-            // Se encontrado, mapeie o UserModel para UserDTO e retorne
-            return modelMapper.map(authUser, UserDTO.class);
-        } else {
-            // Se não encontrado, lance uma exceção ou retorne null, dependendo do seu cenário
-            throw new EntityNotFoundException("Usuário não encontrado");
-        }
+        return modelMapper.map(userModel,DataUserRegisterDTO.class);
     }
 
     public UserDTO findUserById(Long id) {
@@ -76,5 +60,10 @@ public class UserService {
         if(userIdExists.isEmpty()){
             throw new EntityNotFoundException(message);
         }
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
+        return userRepository.findByLogin(login);
     }
 }

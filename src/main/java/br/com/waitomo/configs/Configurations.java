@@ -11,7 +11,6 @@ import org.modelmapper.ModelMapper;
 
 @Configuration
 public class Configurations {
-
     @Bean
     public ModelMapper modelMapper(){
         return new ModelMapper();
