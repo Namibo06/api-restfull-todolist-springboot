@@ -33,7 +33,11 @@ public class UserService implements UserDetailsService {
 
         userRepository.save(userModel);
 
-        DataUserRegisterDTO userResponse = modelMapper.map(userModel, DataUserRegisterDTO.class);
+        DataUserRegisterDTO userResponse = new DataUserRegisterDTO();
+        userResponse.setId(userModel.getId());
+        userModel.setUsername(userModel.getUsername());
+        userResponse.setEmail(userModel.getEmail());
+        userResponse.setPassword(userModel.getPassword());
         return userResponse;
     }
 
