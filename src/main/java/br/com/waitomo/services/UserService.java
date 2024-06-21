@@ -32,7 +32,8 @@ public class UserService implements UserDetailsService {
 
         userRepository.save(userModel);
 
-        return modelMapper.map(userModel, DataUserRegisterDTO.class);
+        DataUserRegisterDTO userResponse = modelMapper.map(userModel, DataUserRegisterDTO.class);
+        return userResponse;
     }
 
     public UserDTO findUserById(Long id) {
