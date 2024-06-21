@@ -35,7 +35,7 @@ public class UserService implements UserDetailsService {
 
         DataUserRegisterDTO userResponse = new DataUserRegisterDTO();
         userResponse.setId(userModel.getId());
-        userModel.setUsername(userModel.getUsername());
+        userResponse.setUsername(userModel.getUsername());
         userResponse.setEmail(userModel.getEmail());
         userResponse.setPassword(userModel.getPassword());
         return userResponse;
