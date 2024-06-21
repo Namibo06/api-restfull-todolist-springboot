@@ -32,10 +32,10 @@ public class UserModel implements UserDetails {
         return List.of(new SimpleGrantedAuthority("ROLE_USER"));
     }
 
-   /* @Override
+    @Override
     public String getUsername(){
-        return email;
-    }*/
+        return username;
+    }
 
     @Override
     public String getPassword(){
