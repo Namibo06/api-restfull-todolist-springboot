@@ -25,16 +25,13 @@ public class UserService implements UserDetailsService {
 
     //services
     public DataUserRegisterDTO createUser(DataUserRegisterDTO user) {
-        // Mapeia os dados do DTO para um UserModel usando o modelMapper
         UserModel userModel = modelMapper.map(user, UserModel.class);
 
-        // Codifica a senha antes de salvar no UserModel
+        userModel.setUsername(user.getUsername());
         userModel.setPassword(passwordEncoder.encode(user.getPassword()));
 
-        // Salva o UserModel no repositório
         userRepository.save(userModel);
 
-        // Retorna o DTO original, se necessário, ou apenas o UserModel mapeado para DTO
         return modelMapper.map(userModel, DataUserRegisterDTO.class);
     }
 
