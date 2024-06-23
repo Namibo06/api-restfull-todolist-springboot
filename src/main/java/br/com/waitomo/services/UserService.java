@@ -2,6 +2,7 @@ package br.com.waitomo.services;
 
 import br.com.waitomo.dtos.DataUserRegisterDTO;
 import br.com.waitomo.dtos.UserDTO;
+import br.com.waitomo.dtos.UserIdDTO;
 import br.com.waitomo.models.UserModel;
 import br.com.waitomo.repositories.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -85,12 +86,12 @@ public class UserService implements UserDetailsService {
         return userRepository.findByEmail(login);
     }
 
-    public UserDTO findUserByToken(String token) {
+    public UserIdDTO findUserByToken(String token) {
         UserModel userModel = userRepository.findUserByToken(token);
         if(userModel == null){
             throw new EntityNotFoundException("Usuário não encontrado por token");
         }
 
-        return modelMapper.map(userModel,UserDTO.class);
+        return modelMapper.map(userModel, UserIdDTO.class);
     }
 }

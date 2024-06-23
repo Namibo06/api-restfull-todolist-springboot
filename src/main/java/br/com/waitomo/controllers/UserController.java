@@ -4,6 +4,7 @@ import br.com.waitomo.api_response.ApiResponse;
 import br.com.waitomo.dtos.DataUserRegisterDTO;
 import br.com.waitomo.dtos.TokenResponseApi;
 import br.com.waitomo.dtos.UserDTO;
+import br.com.waitomo.dtos.UserIdDTO;
 import br.com.waitomo.services.TokenService;
 import br.com.waitomo.services.UserService;
 import jakarta.validation.Valid;
@@ -36,8 +37,8 @@ public class UserController {
     }
 
     @GetMapping("findUser/{token}")
-    public ResponseEntity<UserDTO> findUserByToken(@PathVariable String token){
-        UserDTO findUser = userService.findUserByToken(token);
+    public ResponseEntity<UserIdDTO> findUserByToken(@PathVariable String token){
+        UserIdDTO findUser = userService.findUserByToken(token);
         return ResponseEntity.ok(findUser);
     }
 
