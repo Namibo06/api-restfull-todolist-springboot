@@ -10,7 +10,7 @@ import java.util.Collection;
 import java.util.List;
 
 @Entity
-@Table(name = "tb_user")
+@Table(name = "tb_user", schema = "railway")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
