@@ -35,6 +35,12 @@ public class UserController {
         return ResponseEntity.ok(findUser);
     }
 
+    @GetMapping("findUser/{token}")
+    public ResponseEntity<UserDTO> findUserByToken(@PathVariable String token){
+        UserDTO findUser = userService.findUserByToken(token);
+        return ResponseEntity.ok(findUser);
+    }
+
     @PostMapping
     public ResponseEntity<DataUserRegisterDTO> createUser(@RequestBody @Valid DataUserRegisterDTO user, UriComponentsBuilder uriBuilder){
         DataUserRegisterDTO createUser = userService.createUser(user);

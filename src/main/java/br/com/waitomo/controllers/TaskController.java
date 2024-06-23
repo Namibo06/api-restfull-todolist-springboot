@@ -2,6 +2,7 @@ package br.com.waitomo.controllers;
 
 import br.com.waitomo.dtos.TaskDTO;
 import br.com.waitomo.dtos.TaskSearchDTO;
+import br.com.waitomo.dtos.UserDTO;
 import br.com.waitomo.services.TaskService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
