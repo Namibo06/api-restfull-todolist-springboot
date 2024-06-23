@@ -127,8 +127,6 @@ public class TaskService {
         return updatedTaskDTO;
     }
 
-
-
     public void deleteTaskById(Long id){
         TaskModel taskModel = taskRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Tarefa não encontrada"));
         taskRepository.deleteById(id);

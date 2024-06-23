@@ -47,6 +47,7 @@ public class UserController {
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(credentials.getEmail(),credentials.getPassword());
         Authentication authentication = auth.authenticate(token);
         TokenResponseApi tokenResponse=tokenService.createToken();
+        userService.updateToken(credentials.getEmail(),tokenResponse.getToken());
 
         return ResponseEntity.ok().body(tokenResponse);
     }

@@ -12,4 +12,6 @@ public interface UserRepository extends JpaRepository<UserModel,Long> {
     //@Query(value = "SELECT id, username, email, password FROM tb_user WHERE email = ?1 AND password = ?2",nativeQuery = true)
     //UserModel findByEmailAndPassword(String email,String password);
     UserDetails findByEmail(String email);
+
+    UserModel findByEmailUpdateToken(String email);
 }

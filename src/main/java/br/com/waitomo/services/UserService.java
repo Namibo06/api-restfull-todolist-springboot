@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.modelmapper.ModelMapper;
+import org.webjars.NotFoundException;
 
 import java.util.Optional;
 
@@ -62,6 +63,15 @@ public class UserService implements UserDetailsService {
         if(userIdExists.isEmpty()){
             throw new EntityNotFoundException(message);
         }
+    }
+
+    public void updateToken(String email,String token){
+        UserModel userModel = userRepository.findByEmailUpdateToken(email);
+        if(userModel == null){
+            throw new NotFoundException("Usuário não encontrado");
+        }
+
+        userModel.setToken(token);
     }
 
     @Override

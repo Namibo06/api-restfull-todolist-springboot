@@ -1,13 +1,18 @@
 package br.com.waitomo.services;
 
 import br.com.waitomo.dtos.TokenResponseApi;
+import br.com.waitomo.repositories.UserRepository;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.auth0.jwt.exceptions.JWTCreationException;
 
 @Service
 public class TokenService {
+    @Autowired
+    UserService userService;
+
     public TokenResponseApi createToken(){
         TokenResponseApi tokenResponseApi = new TokenResponseApi();
         try{
@@ -18,11 +23,8 @@ public class TokenService {
 
             return tokenResponseApi;
         }catch (JWTCreationException e){
-            tokenResponseApi.setMessage("Acesso negado: ");
-            tokenResponseApi.setStatus(403);
-            tokenResponseApi.setToken("");
-
-            return tokenResponseApi;
+            throw new RuntimeException("Não foi possivel criar o token");
         }
     }
+
 }
