@@ -9,9 +9,8 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface UserRepository extends JpaRepository<UserModel,Long> {
-    //@Query(value = "SELECT id, username, email, password FROM tb_user WHERE email = ?1 AND password = ?2",nativeQuery = true)
-    //UserModel findByEmailAndPassword(String email,String password);
     UserDetails findByEmail(String email);
 
+    @Query(value = "SELECT token FROM tb_user WHERE email = ?1",nativeQuery = true)
     UserModel findByEmailUpdateToken(String email);
 }

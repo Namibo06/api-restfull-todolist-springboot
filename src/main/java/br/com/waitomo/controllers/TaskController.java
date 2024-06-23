@@ -4,6 +4,7 @@ import br.com.waitomo.dtos.TaskDTO;
 import br.com.waitomo.dtos.TaskSearchDTO;
 import br.com.waitomo.services.TaskService;
 import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
