@@ -72,6 +72,7 @@ public class UserService implements UserDetailsService {
         }
 
         userModel.setToken(token);
+        userRepository.save(userModel);
     }
 
     @Override
