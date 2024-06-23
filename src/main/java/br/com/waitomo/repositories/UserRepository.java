@@ -8,9 +8,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface UserRepository extends JpaRepository<UserModel,Long> {
+public interface UserRepository extends JpaRepository<UserModel, Long> {
     UserDetails findByEmail(String email);
 
-    @Query(value = "SELECT token FROM railway.tb_user WHERE email = ?1",nativeQuery = true)
+    @Query(value = "SELECT * FROM railway.tb_user WHERE email = ?1", nativeQuery = true)
     UserModel findByEmailUpdateToken(String email);
 }
