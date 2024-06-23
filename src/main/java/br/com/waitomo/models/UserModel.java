@@ -26,6 +26,7 @@ public class UserModel implements UserDetails {
     private String email;
     @Column(length = 100,nullable = false)
     private String password;
+    private String token;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

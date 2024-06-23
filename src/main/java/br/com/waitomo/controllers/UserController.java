@@ -2,7 +2,9 @@ package br.com.waitomo.controllers;
 
 import br.com.waitomo.api_response.ApiResponse;
 import br.com.waitomo.dtos.DataUserRegisterDTO;
+import br.com.waitomo.dtos.TokenResponseApi;
 import br.com.waitomo.dtos.UserDTO;
+import br.com.waitomo.services.TokenService;
 import br.com.waitomo.services.UserService;
 import jakarta.validation.Valid;
 import lombok.NonNull;
@@ -25,6 +27,7 @@ import java.util.Map;
 public class UserController {
     private final UserService userService;
     private final AuthenticationManager auth;
+    private final TokenService tokenService;
 
     @GetMapping("/{id}")
     public ResponseEntity<UserDTO> findUserById(@PathVariable @NonNull Long id){
@@ -40,11 +43,12 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Void> authenticateUser(@RequestBody @Valid DataUserRegisterDTO credentials){
+    public ResponseEntity<TokenResponseApi> authenticateUser(@RequestBody @Valid DataUserRegisterDTO credentials){
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(credentials.getEmail(),credentials.getPassword());
         Authentication authentication = auth.authenticate(token);
+        TokenResponseApi tokenResponse=tokenService.createToken();
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok().body(tokenResponse);
     }
 
     @PutMapping("/{id}")
