@@ -42,43 +42,38 @@ public class UserService implements UserDetailsService {
     public ApiResponseMessageStatus updateUserById(Long id, UserUpdateDTO userUpdateDTO){
         userIdExists(id);
 
-        try{
-            UserModel userModelData=userRepository.findById(id).orElseThrow(EntityNotFoundException::new);
-            String currentPassword=userModelData.getPassword();
+        try {
+            UserModel userModelData = userRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+            String currentPassword = userModelData.getPassword();
             String currentToken = userModelData.getToken();
 
+            // Verifica se o email já existe para outro usuário
             if (!userModelData.getEmail().equals(userUpdateDTO.getEmail()) && userRepository.existsByEmail(userUpdateDTO.getEmail())) {
                 throw new RuntimeException("Email já está em uso por outro usuário.");
             }
 
-            UserModel userModel=modelMapper.map(userUpdateDTO,UserModel.class);
-            userModel.setId(userModel.getId());
-
-            if(userUpdateDTO.getUsername() != null){
-                userModel.setUsername(userModel.getUsername());
+            // Atualiza somente os campos permitidos
+            if (userUpdateDTO.getUsername() != null) {
+                userModelData.setUsername(userUpdateDTO.getUsername());
+            }
+            if (userUpdateDTO.getEmail() != null) {
+                userModelData.setEmail(userUpdateDTO.getEmail());
             }
 
-            if(userUpdateDTO.getEmail() != null){
-                userModel.setEmail(userModel.getEmail());
-            }
+            // Mantém a senha e o token atuais
+            userModelData.setPassword(currentPassword);
+            userModelData.setToken(currentToken);
 
-            userModel.setPassword(currentPassword);
-            userModel.setToken(currentToken);
-
-            userRepository.save(userModel);
+            userRepository.save(userModelData); // Isso atualiza o registro existente
 
             ApiResponseMessageStatus apiResponseMessageStatus = new ApiResponseMessageStatus();
-            String message = "Atualizado com sucesso!";
-            Integer status = 200;
-            apiResponseMessageStatus.setMessage(message);
-            apiResponseMessageStatus.setStatus(status);
+            apiResponseMessageStatus.setMessage("Atualizado com sucesso!");
+            apiResponseMessageStatus.setStatus(200);
 
-            return modelMapper.map(userModel, ApiResponseMessageStatus.class);
+            return apiResponseMessageStatus;
+        } catch (Exception e) {
+            throw new RuntimeException("Não foi possível atualizar: ", e);
         }
-        catch (Exception e){
-            throw new RuntimeException("Não foi possivel atualizar: ",e);
-        }
-
     }
 
     public UserDTO updatePasswordUserById(Long id, UserDTO userDTO){
