@@ -1,10 +1,7 @@
 package br.com.waitomo.controllers;
 
 import br.com.waitomo.api_response.ApiResponse;
-import br.com.waitomo.dtos.DataUserRegisterDTO;
-import br.com.waitomo.dtos.TokenResponseApi;
-import br.com.waitomo.dtos.UserDTO;
-import br.com.waitomo.dtos.UserIdDTO;
+import br.com.waitomo.dtos.*;
 import br.com.waitomo.services.TokenService;
 import br.com.waitomo.services.UserService;
 import jakarta.validation.Valid;
@@ -59,9 +56,15 @@ public class UserController {
         return ResponseEntity.ok().body(tokenResponse);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<UserDTO> updateUserById(@PathVariable @NonNull Long id, @RequestBody @Valid UserDTO user){
-        UserDTO userDTO = userService.updateUserById(id,user);
+    @PutMapping("updateUser/{id}")
+    public ResponseEntity<ApiResponseMessageStatus> updateUserById(@PathVariable @NonNull Long id, @RequestBody @Valid UserDTO user){
+        ApiResponseMessageStatus userDTO = userService.updateUserById(id,user);
+        return ResponseEntity.ok(userDTO);
+    }
+
+    @PutMapping("updatePassword/{id}")
+    public ResponseEntity<UserDTO> updatePasswordUserById(@PathVariable @NonNull Long id, @RequestBody @Valid UserDTO user){
+        UserDTO userDTO = userService.updatePasswordUserById(id,user);
         return ResponseEntity.ok(userDTO);
     }
 

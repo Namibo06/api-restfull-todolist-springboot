@@ -1,5 +1,6 @@
 package br.com.waitomo.services;
 
+import br.com.waitomo.dtos.ApiResponseMessageStatus;
 import br.com.waitomo.dtos.DataUserRegisterDTO;
 import br.com.waitomo.dtos.UserDTO;
 import br.com.waitomo.dtos.UserIdDTO;
@@ -7,16 +8,12 @@ import br.com.waitomo.models.UserModel;
 import br.com.waitomo.repositories.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.modelmapper.ModelMapper;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.webjars.NotFoundException;
 
 import java.util.Optional;
 
@@ -45,13 +42,35 @@ public class UserService implements UserDetailsService {
         return modelMapper.map(userModel,UserDTO.class);
     }
 
+    public ApiResponseMessageStatus updateUserById(Long id, UserDTO userDTO){
+        userIdExists(id);
 
+        try{
+            UserModel userModel=modelMapper.map(userDTO,UserModel.class);
+            userModel.setId(userModel.getId());
+            userModel.setUsername(userModel.getUsername());
+            userModel.setEmail(userModel.getEmail());
+            userRepository.save(userModel);
 
-    public UserDTO updateUserById(Long id, UserDTO userDTO){
+            ApiResponseMessageStatus apiResponseMessageStatus = new ApiResponseMessageStatus();
+            String message = "Atualizado com sucesso!";
+            Integer status = 200;
+            apiResponseMessageStatus.setMessage(message);
+            apiResponseMessageStatus.setStatus(status);
+
+            return modelMapper.map(userModel, ApiResponseMessageStatus.class);
+        }
+        catch (Exception e){
+            throw new RuntimeException("Não foi possivel atualizar: ",e);
+        }
+
+    }
+
+    public UserDTO updatePasswordUserById(Long id, UserDTO userDTO){
         userIdExists(id);
 
         UserModel userModel=modelMapper.map(userDTO,UserModel.class);
-        userModel.setId(id);
+        userModel.setPassword(passwordEncoder.encode(userModel.getPassword()));
         userRepository.save(userModel);
         return modelMapper.map(userModel,UserDTO.class);
     }
