@@ -62,9 +62,9 @@ public class UserController {
         return ResponseEntity.ok(userDTO);
     }
 
-    @PutMapping("updatePassword/{id}")
-    public ResponseEntity<UserDTO> updatePasswordUserById(@PathVariable @NonNull Long id, @RequestBody @Valid UserDTO user){
-        UserDTO userDTO = userService.updatePasswordUserById(id,user);
+    @PatchMapping("updatePassword/{id}")
+    public ResponseEntity<ApiResponseMessageStatus> updatePasswordUserById(@PathVariable @NonNull Long id, @RequestBody @Valid UserDTO user){
+        ApiResponseMessageStatus userDTO = userService.updatePasswordUserById(id,user);
         return ResponseEntity.ok(userDTO);
     }
 
