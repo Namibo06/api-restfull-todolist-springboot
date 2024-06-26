@@ -47,12 +47,10 @@ public class UserService implements UserDetailsService {
             String currentPassword = userModelData.getPassword();
             String currentToken = userModelData.getToken();
 
-            // Verifica se o email já existe para outro usuário
             if (!userModelData.getEmail().equals(userUpdateDTO.getEmail()) && userRepository.existsByEmail(userUpdateDTO.getEmail())) {
                 throw new RuntimeException("Email já está em uso por outro usuário.");
             }
 
-            // Atualiza somente os campos permitidos
             if (userUpdateDTO.getUsername() != null) {
                 userModelData.setUsername(userUpdateDTO.getUsername());
             }
@@ -60,11 +58,10 @@ public class UserService implements UserDetailsService {
                 userModelData.setEmail(userUpdateDTO.getEmail());
             }
 
-            // Mantém a senha e o token atuais
             userModelData.setPassword(currentPassword);
             userModelData.setToken(currentToken);
 
-            userRepository.save(userModelData); // Isso atualiza o registro existente
+            userRepository.save(userModelData);
 
             ApiResponseMessageStatus apiResponseMessageStatus = new ApiResponseMessageStatus();
             apiResponseMessageStatus.setMessage("Atualizado com sucesso!");
@@ -76,13 +73,32 @@ public class UserService implements UserDetailsService {
         }
     }
 
-    public UserDTO updatePasswordUserById(Long id, UserDTO userDTO){
+    public ApiResponseMessageStatus updatePasswordUserById(Long id, UserDTO userDTO){
         userIdExists(id);
 
-        UserModel userModel=modelMapper.map(userDTO,UserModel.class);
-        userModel.setPassword(passwordEncoder.encode(userModel.getPassword()));
-        userRepository.save(userModel);
-        return modelMapper.map(userModel,UserDTO.class);
+        try {
+            UserModel userModelData = userRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+            String currentPassword=userModelData.getPassword();
+            String currentToken=userModelData.getToken();
+            String currentEmail = userModelData.getEmail();
+            String currentUsername = userModelData.getUsername();
+
+            if(userDTO.getPassword() != null){
+                userModelData.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+            }
+
+            userRepository.save(userModelData);
+
+            ApiResponseMessageStatus response = new ApiResponseMessageStatus();
+            String message = "Atualizado com sucesso!";
+            Integer status = 200;
+
+            response.setMessage(message);
+            response.setStatus(status);
+            return response;
+        }catch (Exception e){
+            throw new RuntimeException("Não foi possivel atualizar: ",e);
+        }
     }
 
     public void deleteUserById(Long id){
