@@ -47,8 +47,8 @@ public class UserService implements UserDetailsService {
             String currentPassword=userModelData.getPassword();
             String currentToken = userModelData.getToken();
 
-            if(userRepository.existsByEmailAndIdNot(userUpdateDTO.getEmail(),id)){
-                throw new RuntimeException("Email já existe para outro usuário");
+            if (!userModelData.getEmail().equals(userUpdateDTO.getEmail()) && userRepository.existsByEmail(userUpdateDTO.getEmail())) {
+                throw new RuntimeException("Email já está em uso por outro usuário.");
             }
 
             UserModel userModel=modelMapper.map(userUpdateDTO,UserModel.class);
