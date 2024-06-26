@@ -44,17 +44,18 @@ public class UserService implements UserDetailsService {
 
     public ApiResponseMessageStatus updateUserById(Long id, UserDTO userDTO){
         userIdExists(id);
-        String passwordModel = getPasswordModel(id);
 
         try{
+            UserModel userModelData=userRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+            String passwordModel=userModelData.getPassword();
+            String token = userModelData.getToken();
+
             UserModel userModel=modelMapper.map(userDTO,UserModel.class);
             userModel.setId(userModel.getId());
             userModel.setUsername(userModel.getUsername());
             userModel.setEmail(userModel.getEmail());
-
-            if(userModel.getPassword() == null || userModel.getPassword() == ""){
-                userModel.setPassword(passwordModel);
-            }
+            userModel.setPassword(passwordModel);
+            userModel.setToken(token);
 
             userRepository.save(userModel);
 
@@ -118,11 +119,5 @@ public class UserService implements UserDetailsService {
         }
 
         return modelMapper.map(userModel, UserIdDTO.class);
-    }
-
-    public String getPasswordModel(Long id){
-        UserModel userModel=userRepository.findById(id).orElseThrow(EntityNotFoundException::new);
-        String password = userModel.getPassword();
-        return password;
     }
 }
