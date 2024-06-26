@@ -1,9 +1,6 @@
 package br.com.waitomo.services;
 
-import br.com.waitomo.dtos.ApiResponseMessageStatus;
-import br.com.waitomo.dtos.DataUserRegisterDTO;
-import br.com.waitomo.dtos.UserDTO;
-import br.com.waitomo.dtos.UserIdDTO;
+import br.com.waitomo.dtos.*;
 import br.com.waitomo.models.UserModel;
 import br.com.waitomo.repositories.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -42,20 +39,31 @@ public class UserService implements UserDetailsService {
         return modelMapper.map(userModel,UserDTO.class);
     }
 
-    public ApiResponseMessageStatus updateUserById(Long id, UserDTO userDTO){
+    public ApiResponseMessageStatus updateUserById(Long id, UserUpdateDTO userUpdateDTO){
         userIdExists(id);
 
         try{
             UserModel userModelData=userRepository.findById(id).orElseThrow(EntityNotFoundException::new);
-            String passwordModel=userModelData.getPassword();
-            String token = userModelData.getToken();
+            String currentPassword=userModelData.getPassword();
+            String currentToken = userModelData.getToken();
 
-            UserModel userModel=modelMapper.map(userDTO,UserModel.class);
+            if(userRepository.existsByEmailAndIdNot(userUpdateDTO.getEmail(),id)){
+                throw new RuntimeException("Email já existe para outro usuário");
+            }
+
+            UserModel userModel=modelMapper.map(userUpdateDTO,UserModel.class);
             userModel.setId(userModel.getId());
-            userModel.setUsername(userModel.getUsername());
-            userModel.setEmail(userModel.getEmail());
-            userModel.setPassword(passwordModel);
-            userModel.setToken(token);
+
+            if(userUpdateDTO.getUsername() != null){
+                userModel.setUsername(userModel.getUsername());
+            }
+
+            if(userUpdateDTO.getEmail() != null){
+                userModel.setEmail(userModel.getEmail());
+            }
+
+            userModel.setPassword(currentPassword);
+            userModel.setToken(currentToken);
 
             userRepository.save(userModel);
 

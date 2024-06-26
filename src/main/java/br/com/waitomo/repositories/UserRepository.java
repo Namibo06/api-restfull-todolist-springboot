@@ -16,4 +16,6 @@ public interface UserRepository extends JpaRepository<UserModel, Long> {
 
     @Query(value = "SELECT * FROM railway.tb_user WHERE token = ?1", nativeQuery = true)
     UserModel findUserByToken(String token);
+
+    boolean existsByEmailAndIdNot(String email,Long id);
 }

@@ -57,7 +57,7 @@ public class UserController {
     }
 
     @PatchMapping("updateUser/{id}")
-    public ResponseEntity<ApiResponseMessageStatus> updateUserById(@PathVariable @NonNull Long id, @RequestBody @Valid UserDTO user){
+    public ResponseEntity<ApiResponseMessageStatus> updateUserById(@PathVariable @NonNull Long id, @RequestBody @Valid UserUpdateDTO user){
         ApiResponseMessageStatus userDTO = userService.updateUserById(id,user);
         return ResponseEntity.ok(userDTO);
     }
