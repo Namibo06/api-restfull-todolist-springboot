@@ -15,24 +15,19 @@ public class TokenService {
     @Autowired
     UserService userService;
 
-    public TokenResponseApi createToken(){
+    public String createToken(){
         try{
-            TokenResponseApi tokenResponseApi = new TokenResponseApi();
+
             Algorithm algorithm = Algorithm.HMAC256("WaitomoHiper12çCorporation");
             Date now = new Date();
             Date expirationDate = new Date(now.getTime() + 3600 * 1000); //valido por uma hora
 
-            tokenResponseApi.setMessage("Token criado com sucesso!");
-            tokenResponseApi.setStatus(200);
-            tokenResponseApi.setToken(
-                    JWT.create()
-                            .withIssuer("ListaDeTarefas")
-                            .withIssuedAt(now)
-                            .withExpiresAt(expirationDate)
-                            .sign(algorithm)
-            );
+            return JWT.create()
+                    .withIssuer("ListaDeTarefas")
+                    .withIssuedAt(now)
+                    .withExpiresAt(expirationDate)
+                    .sign(algorithm);
 
-            return tokenResponseApi;
         }catch (JWTCreationException e){
             throw new RuntimeException("Não foi possivel criar o token");
         }

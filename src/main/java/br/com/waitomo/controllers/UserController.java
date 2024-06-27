@@ -50,12 +50,22 @@ public class UserController {
     public ResponseEntity<TokenResponseApi> authenticateUser(@RequestBody @Valid DataUserRegisterDTO credentials){
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(credentials.getEmail(),credentials.getPassword());
         Authentication authentication = auth.authenticate(token);
-        TokenResponseApi tokenResponse=tokenService.createToken();
-        userService.updateToken(credentials.getEmail(),tokenResponse.getToken());
-        Long user_id = userService.findUserIdByEmail(credentials.getEmail());
-        tokenResponse.setUser_id(user_id);
+        try{
+            TokenResponseApi tokenResponseApi = new TokenResponseApi();
+            String tokenResponse=tokenService.createToken();
+            tokenResponseApi.setMessage("Token criado com sucesso!");
+            tokenResponseApi.setStatus(200);
+            tokenResponseApi.setToken(tokenResponse);
 
-        return ResponseEntity.ok().body(tokenResponse);
+            userService.updateToken(credentials.getEmail(),tokenResponseApi.getToken());
+            Long user_id = userService.findUserIdByEmail(credentials.getEmail());
+            tokenResponseApi.setUser_id(user_id);
+
+            return ResponseEntity.ok().body(tokenResponseApi);
+        }catch (Exception e){
+            throw new RuntimeException("Não foi possivel autenticar: ",e);
+        }
+
     }
 
     @PutMapping("updateUser/{id}")
