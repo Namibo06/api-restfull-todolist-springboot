@@ -1,8 +1,10 @@
 package br.com.waitomo.models;
 
 import jakarta.persistence.*;
+import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.*;
 
 @Entity
 @Table(name = "tb_task")
@@ -20,6 +22,7 @@ public class TaskModel {
     private String description;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id",nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private UserModel userModel;
 }
