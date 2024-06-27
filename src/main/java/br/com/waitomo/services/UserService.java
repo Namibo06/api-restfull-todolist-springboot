@@ -1,5 +1,6 @@
 package br.com.waitomo.services;
 
+import br.com.waitomo.api_response.ApiResponseMessageStatus;
 import br.com.waitomo.dtos.*;
 import br.com.waitomo.models.UserModel;
 import br.com.waitomo.repositories.UserRepository;
@@ -17,12 +18,10 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class UserService implements UserDetailsService {
-    //injeções
     private final UserRepository userRepository;
     private final ModelMapper modelMapper;
     private final PasswordEncoder passwordEncoder;
 
-    //services
     public DataUserRegisterDTO createUser(DataUserRegisterDTO user) {
         UserModel userModel = modelMapper.map(user, UserModel.class);
 

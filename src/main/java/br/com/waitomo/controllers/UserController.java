@@ -1,24 +1,21 @@
 package br.com.waitomo.controllers;
 
-import br.com.waitomo.api_response.ApiResponse;
+import br.com.waitomo.api_response.ApiResponseMessageStatus;
+import br.com.waitomo.api_response.TokenResponseApi;
 import br.com.waitomo.dtos.*;
 import br.com.waitomo.services.TokenService;
 import br.com.waitomo.services.UserService;
 import jakarta.validation.Valid;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
-import java.util.HashMap;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/users")

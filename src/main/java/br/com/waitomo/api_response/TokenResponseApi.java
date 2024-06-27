@@ -1,4 +1,4 @@
-package br.com.waitomo.dtos;
+package br.com.waitomo.api_response;
 
 import lombok.Getter;
 import lombok.Setter;

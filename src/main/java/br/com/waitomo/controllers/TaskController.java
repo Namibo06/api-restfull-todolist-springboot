@@ -2,14 +2,10 @@ package br.com.waitomo.controllers;
 
 import br.com.waitomo.dtos.TaskDTO;
 import br.com.waitomo.dtos.TaskSearchDTO;
-import br.com.waitomo.dtos.UserDTO;
 import br.com.waitomo.services.TaskService;
 import jakarta.validation.Valid;
-import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
