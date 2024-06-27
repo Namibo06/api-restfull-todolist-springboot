@@ -4,6 +4,7 @@ import br.com.waitomo.api_response.ApiResponse;
 import br.com.waitomo.dtos.*;
 import br.com.waitomo.services.TokenService;
 import br.com.waitomo.services.UserService;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -73,7 +74,15 @@ public class UserController {
             tokenResponseApiUnauthorized.setUser_id(null);
 
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(tokenResponseApiUnauthorized);
-        } catch (Exception e) {
+        }catch (EntityNotFoundException e) {
+            TokenResponseApi tokenResponseApiNotFound = new TokenResponseApi();
+            tokenResponseApiNotFound.setMessage("Usuário não encontrado");
+            tokenResponseApiNotFound.setStatus(404);
+            tokenResponseApiNotFound.setToken(null);
+            tokenResponseApiNotFound.setUser_id(null);
+
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(tokenResponseApiNotFound);
+        }catch (Exception e) {
             TokenResponseApi tokenResponseApiException = new TokenResponseApi();
             tokenResponseApiException.setMessage("Erro Interno");
             tokenResponseApiException.setStatus(500);
