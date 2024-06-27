@@ -39,30 +39,27 @@ public class UserService implements UserDetailsService {
         return modelMapper.map(userModel,UserDTO.class);
     }
 
-    public ApiResponseMessageStatus updateUserById(Long id, UserUpdateDTO userUpdateDTO){
+    public ApiResponseMessageStatus updateUserById(Long id, UserUpdateDTO userUpdateDTO) {
         userIdExists(id);
 
         try {
             UserModel userModelData = userRepository.findById(id).orElseThrow(EntityNotFoundException::new);
-            UserModel updateUserModel = modelMapper.map(userUpdateDTO,UserModel.class);
-            String currentPassword = userModelData.getPassword();
-            String currentToken = userModelData.getToken();
 
             if (!userModelData.getEmail().equals(userUpdateDTO.getEmail()) && userRepository.existsByEmail(userUpdateDTO.getEmail())) {
                 throw new RuntimeException("Email já está em uso por outro usuário.");
             }
 
             if (userUpdateDTO.getUsername() != null) {
-                updateUserModel.setUsername(updateUserModel.getUsername());
+                userModelData.setUsername(userUpdateDTO.getUsername());
             }
             if (userUpdateDTO.getEmail() != null) {
-                updateUserModel.setEmail(updateUserModel.getEmail());
+                userModelData.setEmail(userUpdateDTO.getEmail());
             }
 
-            updateUserModel.setPassword(currentPassword);
-            updateUserModel.setToken(currentToken);
+            userModelData.setPassword(userModelData.getPassword());
+            userModelData.setToken(userModelData.getToken());
 
-            userRepository.save(updateUserModel);
+            userRepository.save(userModelData);
 
             ApiResponseMessageStatus apiResponseMessageStatus = new ApiResponseMessageStatus();
             apiResponseMessageStatus.setMessage("Atualizado com sucesso!");
