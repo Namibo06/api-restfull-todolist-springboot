@@ -8,6 +8,8 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -50,6 +52,8 @@ public class UserController {
 
     @PostMapping("/login")
     public ResponseEntity<TokenResponseApi> authenticateUser(@RequestBody @Valid DataUserRegisterDTO credentials){
+        Logger logger = LoggerFactory.getLogger(this.getClass());
+
         try {
             UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(credentials.getEmail(), credentials.getPassword());
             Authentication authentication = auth.authenticate(token);
@@ -73,6 +77,7 @@ public class UserController {
             tokenResponseApiUnauthorized.setToken(null);
             tokenResponseApiUnauthorized.setUser_id(null);
 
+            logger.error("Authentication failed for user: {}", credentials.getEmail(), e);
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(tokenResponseApiUnauthorized);
         }catch (EntityNotFoundException e) {
             TokenResponseApi tokenResponseApiNotFound = new TokenResponseApi();
@@ -81,6 +86,7 @@ public class UserController {
             tokenResponseApiNotFound.setToken(null);
             tokenResponseApiNotFound.setUser_id(null);
 
+            logger.error("User not found: {}", credentials.getEmail(), e);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(tokenResponseApiNotFound);
         }catch (Exception e) {
             TokenResponseApi tokenResponseApiException = new TokenResponseApi();
@@ -89,6 +95,7 @@ public class UserController {
             tokenResponseApiException.setToken(null);
             tokenResponseApiException.setUser_id(null);
 
+            logger.error("Internal server error", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(tokenResponseApiException);
         }
     }
