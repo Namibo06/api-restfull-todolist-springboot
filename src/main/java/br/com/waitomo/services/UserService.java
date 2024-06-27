@@ -124,6 +124,10 @@ public class UserService implements UserDetailsService {
         userRepository.save(userModel);
     }
 
+    public Long findUserIdByEmail(String email){
+        return userRepository.findIdByEmail(email).getId();
+    }
+
     @Override
     public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
         return userRepository.findByEmail(login);

@@ -11,6 +11,9 @@ import org.springframework.stereotype.Repository;
 public interface UserRepository extends JpaRepository<UserModel, Long> {
     UserDetails findByEmail(String email);
 
+    @Query(value = "SELECT id * FROM railway.tb_user WHERE email = ?1",nativeQuery = true)
+    UserModel findIdByEmail(String email);
+
     @Query(value = "SELECT * FROM railway.tb_user WHERE email = ?1", nativeQuery = true)
     UserModel findByEmailUpdateToken(String email);
 

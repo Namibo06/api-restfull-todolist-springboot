@@ -52,6 +52,8 @@ public class UserController {
         Authentication authentication = auth.authenticate(token);
         TokenResponseApi tokenResponse=tokenService.createToken();
         userService.updateToken(credentials.getEmail(),tokenResponse.getToken());
+        Long user_id = userService.findUserIdByEmail(credentials.getEmail());
+        tokenResponse.setUser_id(user_id);
 
         return ResponseEntity.ok().body(tokenResponse);
     }
