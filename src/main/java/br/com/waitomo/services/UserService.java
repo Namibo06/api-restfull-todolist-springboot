@@ -44,6 +44,7 @@ public class UserService implements UserDetailsService {
 
         try {
             UserModel userModelData = userRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+            UserModel updateUserModel = modelMapper.map(userUpdateDTO,UserModel.class);
             String currentPassword = userModelData.getPassword();
             String currentToken = userModelData.getToken();
 
@@ -52,16 +53,16 @@ public class UserService implements UserDetailsService {
             }
 
             if (userUpdateDTO.getUsername() != null) {
-                userModelData.setUsername(userUpdateDTO.getUsername());
+                updateUserModel.setUsername(updateUserModel.getUsername());
             }
             if (userUpdateDTO.getEmail() != null) {
-                userModelData.setEmail(userUpdateDTO.getEmail());
+                updateUserModel.setEmail(updateUserModel.getEmail());
             }
 
-            userModelData.setPassword(currentPassword);
-            userModelData.setToken(currentToken);
+            updateUserModel.setPassword(currentPassword);
+            updateUserModel.setToken(currentToken);
 
-            userRepository.save(userModelData);
+            userRepository.save(updateUserModel);
 
             ApiResponseMessageStatus apiResponseMessageStatus = new ApiResponseMessageStatus();
             apiResponseMessageStatus.setMessage("Atualizado com sucesso!");
