@@ -56,13 +56,13 @@ public class UserController {
         return ResponseEntity.ok().body(tokenResponse);
     }
 
-    @PatchMapping("updateUser/{id}")
+    @PutMapping("updateUser/{id}")
     public ResponseEntity<ApiResponseMessageStatus> updateUserById(@PathVariable @NonNull Long id, @RequestBody @Valid UserUpdateDTO user){
         ApiResponseMessageStatus userDTO = userService.updateUserById(id,user);
         return ResponseEntity.ok(userDTO);
     }
 
-    @PatchMapping("updatePassword/{id}")
+    @PutMapping("updatePassword/{id}")
     public ResponseEntity<ApiResponseMessageStatus> updatePasswordUserById(@PathVariable @NonNull Long id, @RequestBody @Valid UserDTO user){
         ApiResponseMessageStatus userDTO = userService.updatePasswordUserById(id,user);
         return ResponseEntity.ok(userDTO);
