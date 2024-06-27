@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -48,20 +49,39 @@ public class UserController {
 
     @PostMapping("/login")
     public ResponseEntity<TokenResponseApi> authenticateUser(@RequestBody @Valid DataUserRegisterDTO credentials){
-        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(credentials.getEmail(),credentials.getPassword());
-        Authentication authentication = auth.authenticate(token);
+        try {
+            UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(credentials.getEmail(), credentials.getPassword());
+            Authentication authentication = auth.authenticate(token);
 
-        TokenResponseApi tokenResponseApi = new TokenResponseApi();
-        String tokenResponse=tokenService.createToken();
-        tokenResponseApi.setMessage("Token criado com sucesso!");
-        tokenResponseApi.setStatus(200);
-        tokenResponseApi.setToken(tokenResponse);
+            String tokenResponse = tokenService.createToken();
 
-        userService.updateToken(credentials.getEmail(),tokenResponseApi.getToken());
-        Long user_id = userService.findUserIdByEmail(credentials.getEmail());
-        tokenResponseApi.setUser_id(user_id);
+            TokenResponseApi tokenResponseApi = new TokenResponseApi();
+            tokenResponseApi.setMessage("Token criado com sucesso!");
+            tokenResponseApi.setStatus(200);
+            tokenResponseApi.setToken(tokenResponse);
 
-        return ResponseEntity.ok().body(tokenResponseApi);
+            userService.updateToken(credentials.getEmail(), tokenResponseApi.getToken());
+            Long userId = userService.findUserIdByEmail(credentials.getEmail());
+            tokenResponseApi.setUser_id(userId);
+
+            return ResponseEntity.ok().body(tokenResponseApi);
+        } catch (AuthenticationException e) {
+            TokenResponseApi tokenResponseApiUnauthorized = new TokenResponseApi();
+            tokenResponseApiUnauthorized.setMessage("Autenticação Falhou");
+            tokenResponseApiUnauthorized.setStatus(403);
+            tokenResponseApiUnauthorized.setToken(null);
+            tokenResponseApiUnauthorized.setUser_id(null);
+
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(tokenResponseApiUnauthorized);
+        } catch (Exception e) {
+            TokenResponseApi tokenResponseApiException = new TokenResponseApi();
+            tokenResponseApiException.setMessage("Erro Interno");
+            tokenResponseApiException.setStatus(500);
+            tokenResponseApiException.setToken(null);
+            tokenResponseApiException.setUser_id(null);
+
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(tokenResponseApiException);
+        }
     }
 
     @PutMapping("updateUser/{id}")

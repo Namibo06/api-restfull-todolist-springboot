@@ -115,17 +115,17 @@ public class UserService implements UserDetailsService {
     }
 
     public void updateToken(String email,String token){
-        UserModel userModel = userRepository.findByEmailUpdateToken(email);
-        if(userModel == null){
-            throw new EntityNotFoundException("Usuário não encontrado");
-        }
+        UserModel userModel = userRepository.findByEmailUpdateToken(email)
+                        .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado"));
 
         userModel.setToken(token);
         userRepository.save(userModel);
     }
 
     public Long findUserIdByEmail(String email){
-        return userRepository.findIdByEmail(email).getId();
+        return userRepository.findIdByEmail(email)
+                .map(UserModel::getId)
+                .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado"));
     }
 
     @Override

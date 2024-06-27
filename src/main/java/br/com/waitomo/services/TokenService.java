@@ -14,11 +14,12 @@ import java.util.Date;
 public class TokenService {
     @Autowired
     UserService userService;
+    private static final String SECRET = "WaitomoHiper12çCorporation";
 
     public String createToken(){
         try{
 
-            Algorithm algorithm = Algorithm.HMAC256("WaitomoHiper12çCorporation");
+            Algorithm algorithm = Algorithm.HMAC256(SECRET);
             Date now = new Date();
             Date expirationDate = new Date(now.getTime() + 3600 * 1000); //valido por uma hora
 
