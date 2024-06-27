@@ -16,8 +16,8 @@ public class TokenService {
     UserService userService;
 
     public TokenResponseApi createToken(){
-        TokenResponseApi tokenResponseApi = new TokenResponseApi();
         try{
+            TokenResponseApi tokenResponseApi = new TokenResponseApi();
             Algorithm algorithm = Algorithm.HMAC256("WaitomoHiper12çCorporation");
             Date now = new Date();
             Date expirationDate = new Date(now.getTime() + 3600 * 1000); //valido por uma hora
