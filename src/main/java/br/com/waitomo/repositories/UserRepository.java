@@ -7,19 +7,14 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Repository;
 
-import java.util.Optional;
-
 @Repository
 public interface UserRepository extends JpaRepository<UserModel, Long> {
     UserDetails findByEmail(String email);
 
-    @Query(value = "SELECT id FROM railway.tb_user WHERE email = ?1",nativeQuery = true)
-    Optional<UserModel> findIdByEmail(String email);
+    @Query(value = "SELECT * FROM railway.tb_user WHERE email = ?1", nativeQuery = true)
+    UserModel findByEmailUpdateToken(String email);
 
-    @Query(value = "SELECT id,username,email,password,token FROM railway.tb_user WHERE email = ?1", nativeQuery = true)
-    Optional<UserModel> findByEmailUpdateToken(String email);
-
-    @Query(value = "SELECT id,username,email,password,token FROM railway.tb_user WHERE token = ?1", nativeQuery = true)
+    @Query(value = "SELECT * FROM railway.tb_user WHERE token = ?1", nativeQuery = true)
     UserModel findUserByToken(String token);
 
     boolean existsByEmail(String email);

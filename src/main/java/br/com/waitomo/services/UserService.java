@@ -5,8 +5,6 @@ import br.com.waitomo.models.UserModel;
 import br.com.waitomo.repositories.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -23,7 +21,6 @@ public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
     private final ModelMapper modelMapper;
     private final PasswordEncoder passwordEncoder;
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     //services
     public DataUserRegisterDTO createUser(DataUserRegisterDTO user) {
@@ -118,24 +115,13 @@ public class UserService implements UserDetailsService {
     }
 
     public void updateToken(String email,String token){
-        UserModel userModel = userRepository.findByEmailUpdateToken(email)
-                .orElseThrow(() -> {
-                    logger.error("User not found for token update: {}", email);
-                    return new EntityNotFoundException("Usuário não encontrado");
-                });
+        UserModel userModel = userRepository.findByEmailUpdateToken(email);
+        if(userModel == null){
+            throw new EntityNotFoundException("Usuário não encontrado");
+        }
 
         userModel.setToken(token);
         userRepository.save(userModel);
-    }
-
-    public Long findUserIdByEmail(String email){
-        return userRepository.findIdByEmail(email)
-                .map(UserModel::getId)
-                .orElseThrow(() ->
-                {
-                    logger.error("User not found: {}", email);
-                   return new EntityNotFoundException("Usuário não encontrado");
-                });
     }
 
     @Override

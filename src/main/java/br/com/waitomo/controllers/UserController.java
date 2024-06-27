@@ -4,12 +4,9 @@ import br.com.waitomo.api_response.ApiResponse;
 import br.com.waitomo.dtos.*;
 import br.com.waitomo.services.TokenService;
 import br.com.waitomo.services.UserService;
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -52,52 +49,14 @@ public class UserController {
 
     @PostMapping("/login")
     public ResponseEntity<TokenResponseApi> authenticateUser(@RequestBody @Valid DataUserRegisterDTO credentials){
-        Logger logger = LoggerFactory.getLogger(this.getClass());
+        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(credentials.getEmail(), credentials.getPassword());
+        Authentication authentication = auth.authenticate(token);
 
-        try {
-            UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(credentials.getEmail(), credentials.getPassword());
-            Authentication authentication = auth.authenticate(token);
+        TokenResponseApi tokenResponse = tokenService.createToken();
 
-            String tokenResponse = tokenService.createToken();
+        userService.updateToken(credentials.getEmail(), tokenResponse.getToken());
 
-            TokenResponseApi tokenResponseApi = new TokenResponseApi();
-            tokenResponseApi.setMessage("Token criado com sucesso!");
-            tokenResponseApi.setStatus(200);
-            tokenResponseApi.setToken(tokenResponse);
-
-            userService.updateToken(credentials.getEmail(), tokenResponseApi.getToken());
-            Long userId = userService.findUserIdByEmail(credentials.getEmail());
-            tokenResponseApi.setUser_id(userId);
-
-            return ResponseEntity.ok().body(tokenResponseApi);
-        } catch (AuthenticationException e) {
-            TokenResponseApi tokenResponseApiUnauthorized = new TokenResponseApi();
-            tokenResponseApiUnauthorized.setMessage("Autenticação Falhou");
-            tokenResponseApiUnauthorized.setStatus(403);
-            tokenResponseApiUnauthorized.setToken(null);
-            tokenResponseApiUnauthorized.setUser_id(null);
-
-            logger.error("Authentication failed for user: {}", credentials.getEmail(), e);
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(tokenResponseApiUnauthorized);
-        }catch (EntityNotFoundException e) {
-            TokenResponseApi tokenResponseApiNotFound = new TokenResponseApi();
-            tokenResponseApiNotFound.setMessage("Usuário não encontrado");
-            tokenResponseApiNotFound.setStatus(404);
-            tokenResponseApiNotFound.setToken(null);
-            tokenResponseApiNotFound.setUser_id(null);
-
-            logger.error("User not found: {}", credentials.getEmail(), e);
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(tokenResponseApiNotFound);
-        }catch (Exception e) {
-            TokenResponseApi tokenResponseApiException = new TokenResponseApi();
-            tokenResponseApiException.setMessage("Erro Interno");
-            tokenResponseApiException.setStatus(500);
-            tokenResponseApiException.setToken(null);
-            tokenResponseApiException.setUser_id(null);
-
-            logger.error("Internal server error", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(tokenResponseApiException);
-        }
+        return ResponseEntity.ok().body(tokenResponse);
     }
 
     @PutMapping("updateUser/{id}")

@@ -9,5 +9,4 @@ public class TokenResponseApi {
     private String message;
     private Integer status;
     private String token;
-    private Long user_id;
 }
