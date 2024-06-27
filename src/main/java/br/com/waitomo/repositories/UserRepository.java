@@ -13,7 +13,7 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<UserModel, Long> {
     UserDetails findByEmail(String email);
 
-    @Query(value = "SELECT id * FROM railway.tb_user WHERE email = ?1",nativeQuery = true)
+    @Query(value = "SELECT id FROM railway.tb_user WHERE email = ?1",nativeQuery = true)
     Optional<UserModel> findIdByEmail(String email);
 
     @Query(value = "SELECT * FROM railway.tb_user WHERE email = ?1", nativeQuery = true)
